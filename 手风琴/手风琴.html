@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>手风琴</title>
+    <style>
+
+        ul {
+            list-style: none;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+
+        div {
+            width: 1150px;
+            height: 400px;
+            margin: 50px auto;
+            border: 1px solid red;
+            overflow: hidden;
+        }
+
+        div li {
+            width: 240px;
+            height: 400px;
+            float: left;
+            transition: width 300ms;
+        }
+
+        div ul {
+            width: 1300px;
+        }
+
+        /* div {
+          background-image: url('');
+        } */
+    </style>
+</head>
+<body>
+<div id="box">
+    <ul>
+        <li>
+          <a href="#">
+            <img src="./images/1.jpg" alt="">
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <img src="./images/2.jpg" alt="">
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <img src="./images/3.jpg" alt="">
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <img src="./images/4.jpg" alt="">
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <img src="./images/5.jpg" alt="">
+          </a>
+        </li>
+    </ul>
+</div>
+</body>
+<script>
+
+// 获取元素，遍历li，给每个li添加不同的背景图片
+let lis = document.querySelectorAll('#box li');
+lis.forEach((e,i)=>{
+  e.onmouseover = function(){
+    lis.forEach(e=>{
+      e.style.width = 100 + 'px';
+    });
+    this.style.width = 800 + 'px';
+  }
+  e.onmouseout = ()=>{
+    lis.forEach(e=>{
+      e.style.width = 240 + 'px';
+    });
+  }
+})
+
+</script>
+</html>
