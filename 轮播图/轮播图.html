@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .box {
+      width: 730px;
+      height: 454px;
+      padding: 8px;
+      border: 1px solid green;
+      margin: 100px auto;
+    }
+
+    .inner {
+      position: relative;
+      overflow: hidden;
+      height: 454px;
+    }
+
+    #imglist {
+      width: 700%;
+      position: absolute;
+      left: 0;
+      transition: left 300ms linear;
+    }
+
+    li {
+      float: left;
+    }
+
+    .list {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      margin-left: -85px;
+    }
+
+    .list i {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: #fff;
+      color: #333;
+      float: left;
+      font-style: normal;
+      line-height: 20px;
+      font-size: 14px;
+      text-align: center;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .list i:last-child {
+      margin-right: 0;
+    }
+
+    .list i.current {
+      background-color: skyblue;
+      color: #fff;
+    }
+
+    .arrow {
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      margin-top: -30px;
+    }
+
+    .arrow-left,
+    .arrow-right {
+      width: 30px;
+      height: 60px;
+      position: absolute;
+      font: 20px/60px "consolas";
+      color: #fff;
+      background-color: rgba(0, 0, 0, .3);
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .arrow-right {
+      right: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box" id="box">
+    <div class="inner" id="inner">
+      <ul id="imglist">
+        <li><a href="#"><img src="images/1.jpg" alt=""></a></li>
+        <li><a href="#"><img src="images/2.jpg" alt=""></a></li>
+        <li><a href="#"><img src="images/3.jpg" alt=""></a></li>
+        <li><a href="#"><img src="images/4.jpg" alt=""></a></li>
+        <li><a href="#"><img src="images/5.jpg" alt=""></a></li>
+        <li><a href="#"><img src="images/6.jpg" alt=""></a></li>
+      </ul>
+      <div class="list">
+        <i class="current">1</i>
+        <i>2</i>
+        <i>3</i>
+        <i>4</i>
+        <i>5</i>
+        <i>6</i>
+      </div>
+      <div class="arrow">
+        <span class="arrow-left">&lt;</span>
+        <span class="arrow-right">&gt;</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script>
+
+  // 图片的宽度要在静态资源加载完毕之后获取
+  window.onload = function () {
+    let circles = document.querySelectorAll('.list>i');
+    let ul = document.querySelector('#imglist');
+    let img = document.querySelector('#imglist img');
+    // 序号轮播
+    circles.forEach((e, i) => {
+      e.onmouseover = function () {
+        let target = i * img.offsetWidth * -1;
+        ul.style.left = target + 'px';
+        circles.forEach(e => {
+          e.classList.remove('current');
+        });
+        this.classList.add('current');
+
+        // 需要把点击和自动轮播的索引，和当前移入的这个圆点同步
+        currentImageIndex = i;
+      }
+    });
+
+    // 点击右边按钮
+    let btnRight = document.querySelector('.arrow-right');
+    let currentImageIndex = 0;
+    btnRight.onclick = function () {
+      if (currentImageIndex === ul.children.length - 1) {
+        currentImageIndex = 0;
+      } else {
+        currentImageIndex++;
+      }
+      let target = currentImageIndex * img.offsetWidth * -1;
+      ul.style.left = target + 'px';
+      // 处理原点
+      circles.forEach(e => {
+        e.classList.remove('current');
+      });
+      circles[currentImageIndex].classList.add('current');
+    }
+
+    // 左边按钮
+    let btnLeft = document.querySelector('.arrow-left');
+    btnLeft.onclick = function () {
+      if (currentImageIndex === 0) {
+        currentImageIndex = ul.children.length - 1;
+      } else {
+        currentImageIndex--;
+      }
+      let target = currentImageIndex * img.offsetWidth * -1;
+      ul.style.left = target + 'px';
+      // 处理原点
+      circles.forEach(e => {
+        e.classList.remove('current');
+      });
+      circles[currentImageIndex].classList.add('current');
+    }
+
+    // 自动轮播
+    let timerId = setInterval(() => {
+      btnRight.onclick();
+    }, 1500);
+
+    // 实现鼠标移入移出，暂停和恢复自动轮播
+    let box = document.querySelector('#box');
+    box.onmouseover = () => {
+      clearInterval(timerId);
+    }
+    // 鼠标移出，继续开启定时器
+    box.onmouseout = () => {
+      timerId = setInterval(() => {
+        btnRight.onclick();
+      }, 1500);
+    }
+  }
+
+
+</script>
+
+</html>
