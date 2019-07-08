@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .box {
+      width: 450px;
+      height: 450px;
+      border: 1px solid #aaa;
+      position: relative;
+      top: 100px;
+      left: 100px;
+    }
+
+    .small {
+      width: 450px;
+      height: 450px;
+      position: absolute;
+    }
+
+    .mask {
+      position: absolute;
+      background-color: rgba(255, 255, 0, .3);
+      width: 225px;
+      height: 225px;
+      top: 0;
+      left: 0;
+      display: none;
+    }
+
+    .big {
+      width: 450px;
+      height: 450px;
+      border: 1px solid #aaa;
+      position: absolute;
+      left: 500px;
+      top: 0;
+      overflow: hidden;
+      display: none;
+    }
+
+    .big>img {
+      width: 900px;
+      height: 900px;
+      position: absolute;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <div class="small">
+      <img src="./images/s.jpg" alt="">
+      <div class="mask"></div>
+    </div>
+    <div class="big">
+      <img src="./images/big.jpg" alt="">
+    </div>
+  </div>
+</body>
+<script>
+
+  let small = document.querySelector('.small');
+  let mask = document.querySelector('.mask');
+  let big = document.querySelector('.big');
+  let box = document.querySelector('.box');
+  let bigImg = document.querySelector('.big > img');
+  // 鼠标移入
+  small.onmouseover = function () {
+    // display设置为block
+    mask.style.display = 'block';
+    big.style.display = 'block';
+  }
+  // 鼠标移出
+  small.onmouseout = function () {
+    // display设置为none
+    mask.style.display = 'none';
+    big.style.display = 'none';
+  }
+
+  // 实现鼠标的移动
+  small.onmousemove = function (e) {
+    // 1 实现黄色遮罩随着鼠标移动
+    // 通过画图推导出 ： 遮罩的位置 = 鼠标位置 - small距离页面左上角的位置 - 遮罩宽高的一半
+    // 1.1 鼠标位置
+    let x = e.pageX;
+    let y = e.pageY;
+    // 1.2 small距离页面左上角的距离 - 发现small和box是重叠的，并且box已经做了定位，small无论如何它的位移都是0 了，我们使用box的位置 代替small的位置
+    // console.log(small.offsetParent);
+    // 得到box的位置
+    let offsetLeft = box.offsetLeft;
+    let offsetTop = box.offsetTop;
+    // 1.3 遮罩宽高的一半
+    let halfWidth = mask.offsetWidth / 2;
+    let halfHeight = mask.offsetHeight / 2;
+    // 1.4 算出遮罩的位置
+    let maskX = x - offsetLeft - halfWidth;
+    let maskY = y - offsetTop - halfHeight;
+    // 1.5 约束遮罩的移动的位置
+    // 最小值 0
+    // if(maskX < 0){
+    //   maskX = 0;
+    // }
+    maskX = maskX < 0 ? 0 : maskX;
+    maskY = maskY < 0 ? 0 : maskY;
+    // 最大值 = small的宽高 - 遮罩的宽高
+    // clientWidth 和 clientHeight 称为可视区域宽高
+    let zuidaX = small.clientWidth - mask.offsetWidth;
+    let zuidaY = small.clientHeight - mask.offsetHeight;
+    maskX = maskX > zuidaX ? zuidaX : maskX;
+    maskY = maskY > zuidaY ? zuidaY : maskY;
+    // 1.6 把位置设置给遮罩
+    mask.style.top = maskY + 'px';
+    mask.style.left = maskX + 'px';
+
+
+    // 2.1 根据公式，还缺少 大图的最大移动距离
+    // 大图的最大移动距离 = 大图的宽高 - big盒子的宽高
+    let datuzuidaX = bigImg.offsetWidth - big.offsetWidth;
+    let datuzuidaY = bigImg.offsetHeight - big.offsetHeight;
+    // 2.2 遮罩的当前位置 和 遮罩的最大移动距离，之前已经获取了
+
+    // 2.3 根据公式求出 大图的当前位置
+    let bigImgX = maskX * datuzuidaX / zuidaX;
+    let bigImgY = maskY * datuzuidaY / zuidaY;
+    // 2.4 把求出的位置设置为大图
+    bigImg.style.top = -bigImgY + 'px';
+    bigImg.style.left = -bigImgX + 'px';
+  }
+</script>
+
+</html>
